@@ -1,0 +1,7 @@
+{
+  "name": "TMI-2024-APP",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
