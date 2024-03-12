@@ -20,4 +20,12 @@
 <script setup lang="ts">
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
 import ExploreContainer from '@/components/ExploreContainer.vue';
+
+import { Props } from "./Tab2Page.vue";
+
+const exampleProps: Props = {
+  msg: 'Hola',
+  labels: ['Etiqueta1', 'Etiqueta2'],
+};
+
 </script>
