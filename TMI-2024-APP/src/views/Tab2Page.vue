@@ -46,15 +46,12 @@
         </ion-modal>
 
         <ion-modal trigger="open-modal2" :initial-breakpoint="1" :breakpoints="[0, 1]">
-          <div class="block">COORDENADAS MANUALES</div>
+          <div class="block">INTRODUZCA SU CIUDAD</div>
           <ion-item>
-            <ion-input v-model="latitud" type="text" label="Latitud"></ion-input>
+            <ion-input v-model="ciudad" type="text" label="ciudad"></ion-input>
           </ion-item>
-          <ion-item>
-            <ion-input v-model="longitud" type="text" label="Latitud"></ion-input>
-          </ion-item>
-          <p>Su latitud es: {{ latitud }}</p>
-          <p>Su longitud es: {{ longitud }}</p>
+          <p>Ciudad: {{ ciudad }}</p>
+          <ion-button @click="exportarCiudad">ciudad exportable</ion-button>
         </ion-modal>
 
         
@@ -62,7 +59,7 @@
   </ion-page>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import { IonPage, IonHeader, IonToolbar, IonTitle, 
   IonContent, IonButton, IonCard, IonCardContent, 
   IonCardHeader, IonCardSubtitle, IonCardTitle, IonModal,
@@ -70,26 +67,44 @@ import { IonPage, IonHeader, IonToolbar, IonTitle,
 import ExploreContainer from '@/components/ExploreContainer.vue';
 import { defineComponent, ref  } from 'vue';
 
-let latitud =  ref<string | number | undefined>();
-let longitud =  ref<string | number | undefined>();
+export let latitud_export= ref<string | number | undefined>();
+export let longitud_export= ref<string | number | undefined>();
+export let ciudad_export= ref<string | undefined>();
 
-function error() {
-  alert("Sorry, no position available.");
-}
+export default defineComponent({
+  components: {IonInput, IonItem, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonModal, IonCard, IonCardTitle, IonCardHeader, IonCardSubtitle, IonCardContent},
+  data(){
+    return{
+      latitud: ref<string | number | undefined>(),
+      longitud: ref<string | number | undefined>(),
+      ciudad: ref<string | undefined>(),
+      options: {
+        enableHighAccuracy: true,
+        maximumAge: 30000,
+        timeout: 27000,
+      }
+    };
+  },
+  methods:{
+    error() {
+      alert("Sorry, no position available.");
+    },
 
-const options = {
-  enableHighAccuracy: true,
-  maximumAge: 30000,
-  timeout: 27000,
-};
+    async geolocateIncident() {
+      const positionIncident= await new Promise<any>((accept)=>{
+        navigator.geolocation.getCurrentPosition(accept, this.error, this.options);
+      });
+      this.latitud= positionIncident.coords.latitude;
+      latitud_export= ref(this.latitud);
+      this.longitud= positionIncident.coords.longitude;
+      longitud_export= ref(this.longitud);
+    },
 
-const geolocateIncident = async()=>{
-  const positionIncident= await new Promise<any>((accept)=>{
-    navigator.geolocation.getCurrentPosition(accept, error, options);
-  });
-  latitud.value= positionIncident.coords.latitude;
-  longitud.value= positionIncident.coords.longitude;
-};
+    exportarCiudad(){
+      ciudad_export= ref(this.ciudad);
+    }
+  }
+})
 
 </script>
 
