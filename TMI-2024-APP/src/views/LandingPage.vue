@@ -12,7 +12,7 @@
         </ion-toolbar>
       </ion-header>
       <div class="start-button-container">
-        <ion-button href="/tabs/tab2" size="large" class="start-button">Start</ion-button>
+        <ion-button href="/location" size="large" class="start-button">Start</ion-button>
       </div>
     </ion-content>
   </ion-page>
@@ -20,5 +20,4 @@
 
 <script setup lang="ts">
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/vue';
-import ExploreContainer from '@/components/ExploreContainer.vue';
 </script>

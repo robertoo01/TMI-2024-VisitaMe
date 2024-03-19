@@ -255,7 +255,7 @@ html {
   width: auto; /* Allow button to take up only the necessary width */
 }
 .background-landing {
-  background-image: url('../../public/background.png'); /* Specify the path to your image */
+  background-image: url('../../imgs/background.png'); /* Specify the path to your image */
   background-size: cover; /* Cover the entire viewport */
   background-position: center; /* Center the image */
   background-repeat: no-repeat; /* Prevent image from repeating */

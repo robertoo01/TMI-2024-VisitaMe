@@ -57,7 +57,7 @@ import { IonPage, IonHeader, IonToolbar, IonTitle,
         IonContent, IonButton, IonCard, IonCardContent, 
         IonCardHeader, IonCardSubtitle, IonCardTitle, IonModal} from '@ionic/vue';
 import ExploreContainer from '@/components/ExploreContainer.vue';
-
+//export let location="Madrid";
 
 </script>
 
