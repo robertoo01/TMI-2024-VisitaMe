@@ -5,27 +5,32 @@ import TabsPage from '../views/TabsPage.vue'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/tabs/tab1'
+    redirect: '/landing'
   },
   {
-    path: '/tabs/',
+    path: '/locationDetails',
+    name: 'Location Details',
+    component: () => import('@/views/LocationDetails.vue'),
+  },
+  {
+    path: '/',
     component: TabsPage,
     children: [
       {
         path: '',
-        redirect: '/tabs/tab1'
+        redirect: '/landing'
       },
       {
-        path: 'tab1',
-        component: () => import('@/views/Tab1Page.vue')
+        path: 'landing',
+        component: () => import('@/views/LandingPage.vue')
       },
       {
-        path: 'tab2',
+        path: 'location',
         component: () => import('@/views/Tab2Page.vue')
       },
       {
-        path: 'tab3',
-        component: () => import('@/views/Tab3Page.vue')
+        path: 'sitelist',
+        component: () => import('@/views/SiteListPage.vue')
       }
     ]
   }
