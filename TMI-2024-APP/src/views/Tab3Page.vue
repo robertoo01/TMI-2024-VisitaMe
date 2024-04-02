@@ -13,6 +13,9 @@
       </ion-header>
 
       <ExploreContainer name="Tab 3 page" />
+      <p>Ciudad: {{ ciudad_export }}</p>
+      <p>Latitud: {{ latitud_export }}</p>
+      <p>Longitud: {{ longitud_export }}</p>
     </ion-content>
   </ion-page>
 </template>
@@ -21,11 +24,5 @@
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
 import ExploreContainer from '@/components/ExploreContainer.vue';
 
-import { Props } from "./Tab2Page.vue";
-
-const exampleProps: Props = {
-  msg: 'Hola',
-  labels: ['Etiqueta1', 'Etiqueta2'],
-};
-
+import { ciudad_export, latitud_export, longitud_export } from "./Tab2Page.vue";
 </script>
