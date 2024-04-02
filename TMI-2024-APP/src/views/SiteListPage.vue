@@ -12,7 +12,7 @@
         </ion-toolbar>
       </ion-header>
       <ion-item>
-    <ion-label>Ubicación: {{ location }}</ion-label>
+    <ion-label>Ubicación: Madrid</ion-label>
     </ion-item>
     <ion-item>
     <ion-list :inset="true">
@@ -35,13 +35,18 @@
       </ion-item>
     </ion-list>
   </ion-item>
-
+  <!--div id="mapContainer" style="height: 400px;"></div-->
+      <!--ul>
+        <li v-for="monument in monuments" :key="monument.place_id">
+          {{ monument.name }}
+        </li>
+      </ul-->
       
     </ion-content>
   </ion-page>
 </template>
 
-<script  lang="ts">
+<script lang="ts">
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonList, useIonRouter, IonButton } from '@ionic/vue';
 import { Storage } from '@ionic/storage'; 
 import { defineComponent } from 'vue';
@@ -55,6 +60,6 @@ export default defineComponent({
       router.push('/locationDetails');
     };
     return { push };
-  },
+  }
 });
 </script>
