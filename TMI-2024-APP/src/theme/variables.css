@@ -197,7 +197,7 @@ http://ionicframework.com/docs/theming/ */
    */
 
   .md body {
-    --ion-background-color: #121212;
+    --ion-background-color: #12121200;
     --ion-background-color-rgb: 18,18,18;
 
     --ion-text-color: #ffffff;
@@ -255,7 +255,7 @@ html {
   width: auto; /* Allow button to take up only the necessary width */
 }
 .background-landing {
-  background-image: url('../../public/background.png') !important; /* Specify the path to your image */
+  background-image: url('../../public/background.png'); /* Specify the path to your image */
   background-size: cover; /* Cover the entire viewport */
   background-position: center; /* Center the image */
   background-repeat: no-repeat; /* Prevent image from repeating */
