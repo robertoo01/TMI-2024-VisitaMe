@@ -15,11 +15,21 @@
         <ion-label>Ubicación: Madrid</ion-label>
       </ion-item>
       <ion-item>
-        <ion-list :inset="true" v-if="places.length == 5">
+        <ion-list :inset="true" v-if="places.length > 0">
           <ion-label>Lista de lugares emblemáticos a visitar</ion-label>
-          <ion-item v-for="place in places" :key="place.id">
-              <ion-label>{{ place.name }}</ion-label>
-              <ion-img :src="'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=' + place.photos[0].photo_reference + '&key=AIzaSyAiiWwBeiWGDdBOFCJ480LUHaBju8aneWU'"></ion-img>
+          <ion-item v-for="(place, index) in places" :key="place.id">
+            <ion-label :id="'click-trigger-' + index">{{ place.name }}</ion-label>
+            <ion-button>{{ index }}</ion-button>
+            <ion-popover :trigger="'click-trigger-' + index" trigger-action="click">
+              <ion-label>{{ place.name }}
+              <ion-label>UBICACION:<br>{{ place.vicinity }}<br>
+                              <ion-img :src="'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=' + place.photos[0].photo_reference + '&key=' + api_key" v-if="place.photos.length > 0"></ion-img>
+            </ion-label>
+              </ion-label>
+              <ion-button @click="takePicture">Foto</ion-button>
+
+            </ion-popover>
+
           </ion-item>
         </ion-list>
       </ion-item>
@@ -29,16 +39,19 @@
 </template>
 
 <script lang="ts">
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonList, useIonRouter, IonButton, IonImg } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonList, useIonRouter, IonButton, IonImg, IonPopover } from '@ionic/vue';
 import { defineComponent } from 'vue';
 //import { location } from './Tab2Page.vue';
 import axios from "axios"
+import { API_KEY } from "../key"
+import { Camera, CameraResultType } from '@capacitor/camera';
 
 
 export default defineComponent({
   components: { IonPage },
   data() {
     return {
+      api_key: API_KEY,
       lat: 40.4380981,
       lng: -3.8446862,
       keyword: "Sitios+emblematicos+de+Madrid",
@@ -55,9 +68,9 @@ export default defineComponent({
     return { push };
   },
   mounted() {
-    const URL = "/api/maps/api/place/nearbysearch/json?location="+this.lat+","+this.lng+"&keyword="+this.keyword+"&radius="+this.radius+"&key=AIzaSyAiiWwBeiWGDdBOFCJ480LUHaBju8aneWU";
+    const URL = "/api/maps/api/place/nearbysearch/json?location=" + this.lat + "," + this.lng + "&keyword=" + this.keyword + "&radius=" + this.radius + "&key=" + API_KEY;
     axios.get(URL).then(response => {
-      this.places = response.data.results.slice(0,5);
+      this.places = response.data.results.slice(0, 5);
       console.log(response.data.results)
     }).catch(error => {
       console.log(error.message);
@@ -65,14 +78,37 @@ export default defineComponent({
 
   },
   methods: {
-    monumentPhoto(photo_ref:string){
-      const url = "/api/maps/api/place/photo?maxwidth=400&photo_reference=" + photo_ref + "&key=AIzaSyAiiWwBeiWGDdBOFCJ480LUHaBju8aneWU";
+    monumentPhoto(photo_ref: string) {
+      const url = "/api/maps/api/place/photo?maxwidth=400&photo_reference=" + photo_ref + "&key=" + API_KEY;
       axios.get(url).then(response => {
         return response;
       }).catch(error => {
-      console.log("Error al obtener la foto: " + error.message);
-    });
-    }
+        console.log("Error al obtener la foto: " + error.message);
+      });
+    },
+    async takePicture() {
+  const image = await Camera.getPhoto({
+    quality: 90,
+    allowEditing: true,
+    resultType: CameraResultType.Uri
+  });
+
+  // image.webPath will contain a path that can be set as an image src.
+  // You can access the original file using image.path, which can be
+  // passed to the Filesystem API to read the raw data of the image,
+  // if desired (or pass resultType: CameraResultType.Base64 to getPhoto)
+  var imageUrl = image.webPath;
+
+  // Can be set to the src of an image now
+  //imageElement.src = imageUrl;
+  console.log("Tomar foto: " + imageUrl);
+},
   },
 });
+
+
+
+
+
+
 </script>

@@ -28,7 +28,6 @@ const app = createApp(App)
   .use(IonicVue)
   .use(router);
 //const pinia = createPinia();
-  
 router.isReady().then(() => {
   app.mount('#app');
   //app.use(pinia);
