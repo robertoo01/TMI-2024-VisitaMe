@@ -22,12 +22,13 @@
             <ion-button>{{ index }}</ion-button>
             <ion-popover :trigger="'click-trigger-' + index" trigger-action="click">
               <ion-label>{{ place.name }}
-              <ion-label>UBICACION:<br>{{ place.vicinity }}<br>
+              <ion-label>UBICACION:<br>{{ place.vicinity }}</br>
+              <ion-label>COORDENADAS: {{place.geometry.location.lat }} , {{ place.geometry.location.lng }}</ion-label>
                               <ion-img :src="'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=' + place.photos[0].photo_reference + '&key=' + api_key" v-if="place.photos.length > 0"></ion-img>
             </ion-label>
               </ion-label>
               <ion-button @click="takePicture">Foto</ion-button>
-
+              
             </ion-popover>
 
           </ion-item>
@@ -45,6 +46,7 @@ import { defineComponent } from 'vue';
 import axios from "axios"
 import { API_KEY } from "../key"
 import { Camera, CameraResultType } from '@capacitor/camera';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 
 
 export default defineComponent({
@@ -90,7 +92,7 @@ export default defineComponent({
   const image = await Camera.getPhoto({
     quality: 90,
     allowEditing: true,
-    resultType: CameraResultType.Uri
+    resultType: CameraResultType.Base64
   });
 
   // image.webPath will contain a path that can be set as an image src.
@@ -101,8 +103,48 @@ export default defineComponent({
 
   // Can be set to the src of an image now
   //imageElement.src = imageUrl;
-  console.log("Tomar foto: " + imageUrl);
+  const url = "https://vision.googleapis.com/v1/images:annotate?key=" + API_KEY;
+  const request = {
+    requests: [
+      {
+        image: {
+          content: image.base64String
+        },
+        features:[
+          {
+            type: 'LANDMARK_DETECTION'
+          }
+        ]
+      }
+    ]
+  };
+  await axios.post(url,request).then(response => {
+    const coords = response.data.responses[0].landmarkAnnotations[0].locations[0].latLng;
+    return coords;
+  }).catch(error => {
+        console.log("Error al obtener la foto: " + error.message);
+      });
 },
+toRadians(degrees) {
+    return degrees * (Math.PI/180);
+},
+haversine(lat1, lon1, lat2, lon2) {
+    const R = 6371000; // Radio de la Tierra en metros
+    const phi1 = this.toRadians(lat1);
+    const phi2 = this.toRadians(lat2);
+    const deltaPhi = this.toRadians(lat2 - lat1);
+    const deltaLambda = this.toRadians(lon2 - lon1);
+
+    const a = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2) +
+              Math.cos(phi1) * Math.cos(phi2) *
+              Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    const distance = R * c;
+    return distance;
+}
+
   },
 });
 
