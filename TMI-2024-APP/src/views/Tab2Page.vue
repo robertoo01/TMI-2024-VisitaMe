@@ -69,7 +69,6 @@ import ExploreContainer from '@/components/ExploreContainer.vue';
 import { defineComponent, ref  } from 'vue';
 import { API_KEY } from "../key"
 import axios from "axios"
-import videoshow from 'videoshow';
 
 export let latitud_export= ref<string | number | undefined>();
 export let longitud_export= ref<string | number | undefined>();
@@ -130,65 +129,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style>
-  .block {
-    width: 100%;
-    height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  ion-modal {
-    --height: auto;
-  }
-
-  .distancia{
-    margin-top: 20%;
-    margin-bottom: 20%;
-  }
-
-  .interrogacion{
-    position: absolute;
-    top: 20%;
-    left: 60%;
-    width: 10%;
-    height: 30%;
-    z-index: 1;
-  }
-  .mapa{
-    position: absolute;
-    top: 20%;
-    left: 20%;
-    width: 10%;
-    height: 30%;
-    z-index: 1;
-    transform: rotate(-10deg);
-  }
-  .mapa2{
-    position: absolute;
-    top: 20%;
-    right: 20%;
-    width: 10%;
-    height: 30%;
-    z-index: 1;
-    transform: rotate(10deg);
-  }
-
-  .boton-centrado {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-  }
-
-  .imagen-fondo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 0;
-    opacity: 0.3;
-  }
-</style>
