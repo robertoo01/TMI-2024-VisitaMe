@@ -47,9 +47,12 @@
 
       <ion-modal trigger="open-modal2" :initial-breakpoint="1" :breakpoints="[0, 1]">
         <div class="block">INTRODUZCA SU CIUDAD</div>
-        <ion-item>
-          <ion-input v-model="ciudad" type="text" label="ciudad"></ion-input>
-        </ion-item>
+        <ion-searchbar @ionInput="autocomplete($event)"></ion-searchbar>
+        <ion-list :inset="true" v-if="predictionsList.length > 0">
+          <ion-item v-for="(pred, index) in predictionsList" :key="pred.id">
+            <ion-label @click="selectCityCoord(pred)">{{ pred.description }}</ion-label>
+          </ion-item>
+        </ion-list>
         <p>Ciudad: {{ ciudad }}</p>
         <ion-button @click="exportarCiudad">ciudad exportable</ion-button>
       </ion-modal> 
@@ -61,9 +64,12 @@
 import { IonPage, IonHeader, IonToolbar, IonTitle, 
   IonContent, IonButton, IonCard, IonCardContent, 
   IonCardHeader, IonCardSubtitle, IonCardTitle, IonModal,
-  IonLabel, IonInput, IonItem} from '@ionic/vue';
+  IonLabel, IonInput, IonItem, IonSearchbar,IonList} from '@ionic/vue';
 import ExploreContainer from '@/components/ExploreContainer.vue';
 import { defineComponent, ref  } from 'vue';
+import { API_KEY } from "../key"
+import axios from "axios"
+import videoshow from 'videoshow';
 
 export let latitud_export= ref<string | number | undefined>();
 export let longitud_export= ref<string | number | undefined>();
@@ -80,7 +86,8 @@ export default defineComponent({
         enableHighAccuracy: true,
         maximumAge: 30000,
         timeout: 27000,
-      }
+      },
+      predictionsList: [],
     };
   },
   methods:{
@@ -100,10 +107,28 @@ export default defineComponent({
 
     exportarCiudad(){
       ciudad_export.value= this.ciudad;
+    },
+    autocomplete(event:string){
+      const url = "/api/maps/api/place/autocomplete/json?input=" + event?.target.value.toLowerCase() + "&language=es_ES&types=%28cities%29&key=" + API_KEY;
+      axios.get(url).then(response => {
+      this.predictionsList=response.data.predictions;
+    }).catch(error => {
+      console.log(error.message);
+    });
+    },
+    selectCityCoord(pred : any){
+      this.ciudad=pred.structured_formatting.main_text;
+      const url = "/api/maps/api/place/details/json?place_id=" + pred.place_id + "&key=" + API_KEY;
+      axios.get(url).then(response => {
+      this.latitud=response.data.result.geometry.location.lat;
+      this.longitud=response.data.result.geometry.location.lng;
+    }).catch(error => {
+      console.log(error.message);
+    });
+      this.latitud;
     }
   }
 })
-
 </script>
 
 <style>
