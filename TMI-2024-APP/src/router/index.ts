@@ -31,6 +31,10 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'sitelist',
         component: () => import('@/views/SiteListPage.vue')
+      },
+      {
+        path: 'end',
+        component: () => import('@/views/endRoute.vue')
       }
     ]
   }
