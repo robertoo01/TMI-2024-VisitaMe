@@ -47,8 +47,6 @@ import axios from "axios"
 import { API_KEY } from "../key"
 import { Camera, CameraResultType } from '@capacitor/camera';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
-
-
 export default defineComponent({
   components: { IonPage },
   data() {

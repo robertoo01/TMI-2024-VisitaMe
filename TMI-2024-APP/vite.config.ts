@@ -16,6 +16,10 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Embedder-Policy": "require-corp",
+    }
   },
   plugins: [
     vue(),
@@ -29,5 +33,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom'
+  },
+  optimizeDeps:{
+    exclude:['@ffmpeg/ffmpeg','@ffmpeg/util']
   }
 })

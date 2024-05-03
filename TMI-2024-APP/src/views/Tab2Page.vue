@@ -69,7 +69,6 @@ import ExploreContainer from '@/components/ExploreContainer.vue';
 import { defineComponent, ref  } from 'vue';
 import { API_KEY } from "../key"
 import axios from "axios"
-
 export let latitud_export= ref<string | number | undefined>();
 export let longitud_export= ref<string | number | undefined>();
 export let ciudad_export= ref<string | undefined>();
