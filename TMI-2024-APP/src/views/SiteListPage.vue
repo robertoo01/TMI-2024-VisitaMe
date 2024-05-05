@@ -12,7 +12,7 @@
         </ion-toolbar>
       </ion-header>
       <ion-item>
-        <ion-label>Ubicación: Madrid</ion-label>
+        <ion-label>Ubicación: {{ city }}</ion-label>
       </ion-item>
       <ion-item>
         <ion-list :inset="true" v-if="places.length > 0">
@@ -34,54 +34,57 @@
           </ion-item>
         </ion-list>
       </ion-item>
-
+      <ion-button @click="exportarLugares">
+        Finalizar
+      </ion-button>
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonList, useIonRouter, IonButton, IonImg, IonPopover } from '@ionic/vue';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 //import { location } from './Tab2Page.vue';
 import axios from "axios"
 import { API_KEY } from "../key"
 import { Camera, CameraResultType } from '@capacitor/camera';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 
+import { ciudad_export, latitud_export, longitud_export } from "./Tab2Page.vue";
+
+
+export let places_export= ref<any[]>([]);
 
 export default defineComponent({
-  components: { IonPage },
+  components: { IonPage, IonItem, IonButton },
   data() {
     return {
       api_key: API_KEY,
-      lat: 40.4380981,
-      lng: -3.8446862,
-      keyword: "Sitios+emblematicos+de+Madrid",
+      lat: 40.43985248489788,
+      lng: -3.7057588187122303,
+      keyword: "Sitios+emblematicos+de", //+Lisboa
       radius: "50000",
+      city: ciudad_export.value,
       numSites: 5,
       places: [],
       imgLinks: [],
       siteCoords: [],
       photoCoords: [],
+      route: useIonRouter(),
     };
-  },
-  setup() {
-    const router = useIonRouter();
-    const push = () => {
-      router.push('/locationDetails');
-    };
-    return { push };
   },
   mounted() {
-    const URL = "/api/maps/api/place/nearbysearch/json?location=" + this.lat + "," + this.lng + "&keyword=" + this.keyword + "&radius=" + this.radius + "&key=" + API_KEY;
+    const URL = "/api/maps/api/place/nearbysearch/json?location=" + latitud_export.value + "," + longitud_export.value + "&keyword=" + this.keyword + ciudad_export.value + "&radius=" + this.radius + "&key=" + API_KEY;
     axios.get(URL).then(response => {
       this.places = response.data.results.slice(0, this.numSites);
       for (let i = 0; i < this.places.length; i++) {
         this.siteCoords[i] = this.places[i].geometry.location;
         this.monumentPhoto(this.places[i].photos[0].photo_reference,i);
       }
-      //console.log(this.imgLinks)
-      //console.log(response.data.results)
+      
+      //console.log(this.imgLinks);
+      //console.log(response.data.results);
+
     }).catch(error => {
       console.log(error.message);
     });
@@ -156,12 +159,15 @@ export default defineComponent({
 
       const distance = R * c;
       return distance;
+    },
+    async exportarLugares(){
+      
+      places_export.value= this.places;
+      this.route.push('/end');
     }
 
   },
 });
-
-
 
 
 
