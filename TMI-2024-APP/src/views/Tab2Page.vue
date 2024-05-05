@@ -39,13 +39,13 @@
         </ion-card-header>
       </ion-card>
 
-      <ion-modal trigger="open-modal1" :initial-breakpoint="1" :breakpoints="[0, 1]">
+      <ion-modal class="modal" trigger="open-modal1" :initial-breakpoint="1" :breakpoints="[0, 1]">
         <div class="block">GPS AUTOMATICA</div>
         <p>Su latitud es: {{ latitud }}</p>
         <p>Su longitud es: {{ longitud }}</p>
       </ion-modal>
 
-      <ion-modal trigger="open-modal2" :initial-breakpoint="1" :breakpoints="[0, 1]">
+      <ion-modal class="modal" trigger="open-modal2" :initial-breakpoint="1" :breakpoints="[0, 1]">
         <div class="block">INTRODUZCA SU CIUDAD</div>
         <ion-searchbar @ionInput="autocomplete($event)"></ion-searchbar>
         <ion-list :inset="true" v-if="predictionsList.length > 0">
@@ -53,8 +53,14 @@
             <ion-label @click="selectCityCoord(pred)">{{ pred.description }}</ion-label>
           </ion-item>
         </ion-list>
-        <p>Ciudad: {{ ciudad }}</p>
-        <ion-button @click="exportarCiudad">ciudad exportable</ion-button>
+
+        <ion-alert
+          :is-open="showAlertComponent"
+          @ionAlertDidDismiss="showAlertComponent = false"
+          :header="nameAlert"
+        ></ion-alert>
+        <!--<p>Ciudad: {{ ciudad }}</p>
+        <ion-button @click="exportarCiudad">ciudad exportable</ion-button>-->
       </ion-modal> 
     </ion-content>
   </ion-page>
@@ -64,7 +70,8 @@
 import { IonPage, IonHeader, IonToolbar, IonTitle, 
   IonContent, IonButton, IonCard, IonCardContent, 
   IonCardHeader, IonCardSubtitle, IonCardTitle, IonModal,
-  IonLabel, IonInput, IonItem, IonSearchbar,IonList} from '@ionic/vue';
+  IonLabel, IonInput, IonItem, IonSearchbar,IonList,
+  IonAlert} from '@ionic/vue';
 import ExploreContainer from '@/components/ExploreContainer.vue';
 import { defineComponent, ref  } from 'vue';
 import { API_KEY } from "../key"
@@ -75,7 +82,10 @@ export let longitud_export= ref<string | number | undefined>();
 export let ciudad_export= ref<string | undefined>();
 
 export default defineComponent({
-  components: {IonInput, IonItem, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonModal, IonCard, IonCardTitle, IonCardHeader, IonCardSubtitle, IonCardContent},
+  components: { IonInput, IonItem, IonPage, IonHeader, IonToolbar, 
+                IonTitle, IonContent, IonButton, IonModal, IonCard, 
+                IonCardTitle, IonCardHeader, IonCardSubtitle, IonCardContent,
+                IonSearchbar, IonList, IonLabel, IonAlert},
   data(){
     return{
       latitud: ref<string | number | undefined>(),
@@ -87,6 +97,8 @@ export default defineComponent({
         timeout: 27000,
       },
       predictionsList: [],
+      showAlertComponent: false,
+      nameAlert: ""
     };
   },
   methods:{
@@ -104,9 +116,11 @@ export default defineComponent({
       longitud_export.value= this.longitud;
     },
 
+    /*
     exportarCiudad(){
       ciudad_export.value= this.ciudad;
     },
+    */
     autocomplete(event:string){
       const url = "/api/maps/api/place/autocomplete/json?input=" + event?.target.value.toLowerCase() + "&language=es_ES&types=%28cities%29&key=" + API_KEY;
       axios.get(url).then(response => {
@@ -121,6 +135,17 @@ export default defineComponent({
       axios.get(url).then(response => {
       this.latitud=response.data.result.geometry.location.lat;
       this.longitud=response.data.result.geometry.location.lng;
+
+      latitud_export.value= this.latitud;
+      longitud_export.value= this.longitud;
+
+      console.log(response.data.result.name);
+      this.nameAlert= response.data.result.name;
+      ciudad_export.value= this.nameAlert;
+
+      this.showAlertComponent= true;
+
+
     }).catch(error => {
       console.log(error.message);
     });
@@ -129,3 +154,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style>
+  .modal{
+    --background: black;
+  }
+</style>
