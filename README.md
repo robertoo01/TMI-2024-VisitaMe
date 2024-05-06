@@ -17,13 +17,13 @@ Los alumnos que están desarrollando este proyecto son:
 _NOTA: NO SE PRETENDE OBTENER NINGÚN VALOR LUCRATIVO CON EL DESARROLLO DE ESTE PROYECTO._
 
 ## Requisitos de desarrollo
-* [NPM](https://github.com/nvm-sh/nvm) como gestor de paquetes.
-* [Ionic] (https://ionicframework.com/docs/api) como Framework de desarrollo Web orientado a móvil.
+* [NPM](https://www.npmjs.com/) como gestor de paquetes.
+* [Ionic](https://ionicframework.com/docs/api) como Framework de desarrollo Web orientado a móvil.
 ```shell
 npm install -g @ionic/cli
 ```
-* [VueJs] (https://vuejs.org/) como Framework de Javascript combinado con Ionic.
-* [Capacitor] (https://capacitorjs.com/) como Framework de "comunicación" con diferentes herramientas del dispositivo móvil, como puede ser la cámara.
+* [VueJs](https://vuejs.org/) como Framework de Javascript combinado con Ionic.
+* [Capacitor](https://capacitorjs.com/) como Framework de "comunicación" con diferentes herramientas del dispositivo móvil, como puede ser la cámara.
 ```shell
 npm install @capacitor/cli @capacitor/core
 ```
