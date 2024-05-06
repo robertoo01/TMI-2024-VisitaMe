@@ -5,56 +5,53 @@
         <ion-title class="header-title">Lista de lugares a visitar</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Visita-Me</ion-title>
-        </ion-toolbar>
-      </ion-header>
-      <ion-item>
-        <ion-label>Ubicación: {{ city }}</ion-label>
-      </ion-item>
-      <ion-item>
-        <ion-list :inset="true" v-if="places.length > 0">
-          <ion-label>Lista de lugares emblemáticos a visitar</ion-label>
-          <ion-item v-for="(place, index) in places" :key="place.id">
-            <ion-label :id="'click-trigger-' + index">{{ place.name }}</ion-label>
-            <ion-button>{{ index }}</ion-button>
-            <ion-popover :trigger="'click-trigger-' + index" trigger-action="click">
-              <ion-label>{{ place.name }}
-                <ion-label>UBICACION:<br>{{ place.vicinity }}</br>
-                  <ion-img :src=imgLinks[index]></ion-img>
-                </ion-label>
-              </ion-label>
-              <ion-button @click="takePicture(index)">Foto</ion-button>
-
-
-            </ion-popover>
-
-          </ion-item>
-        </ion-list>
-      </ion-item>
-      <ion-button @click="exportarLugares">
-        Finalizar
-      </ion-button>
+    <ion-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <ion-title>Lugares emblemáticos de {{ city }}</ion-title>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <ion-list :inset="true" v-if="places.length > 0">
+              <ion-item v-for="(place, index) in places" :key="index" class="ion-text-center">
+                <ion-card :id="'card-' + index" class="ion-text-center">
+                  <ion-card-title>{{ place.name }}</ion-card-title>
+                  <ion-card-header>{{ place.vicinity }}</ion-card-header>
+                  <ion-item>
+                    <img :src=imgLinks[index] crossorigin/>
+                  </ion-item>
+                  <ion-button @click="takePicture(index)">Foto</ion-button>
+                </ion-card>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <ion-button @click="exportarLugares()">Finalizar recorrido</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      
     </ion-content>
   </ion-page>
 </template>
 
 <script lang="ts">
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonList, useIonRouter, IonButton, IonImg, IonPopover } from '@ionic/vue';
+import {
+  IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonItem,
+  IonLabel, IonList, useIonRouter, IonButton, IonImg, IonPopover,
+  IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle
+} from '@ionic/vue';
 import { defineComponent, ref } from 'vue';
-//import { location } from './Tab2Page.vue';
 import axios from "axios"
 import { API_KEY } from "../key"
 import { Camera, CameraResultType } from '@capacitor/camera';
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
-
 import { ciudad_export, latitud_export, longitud_export } from "./Tab2Page.vue";
 
-
-export let places_export= ref<any[]>([]);
-
+export let places_export = ref<any[]>([]);
 export default defineComponent({
   components: { IonPage, IonItem, IonButton },
   data() {
@@ -62,26 +59,28 @@ export default defineComponent({
       api_key: API_KEY,
       lat: 40.43985248489788,
       lng: -3.7057588187122303,
-      keyword: "Sitios+emblematicos+de", //+Lisboa
+      keyword: "Sitios+emblematicos+de",
       radius: "50000",
-      city: ciudad_export.value,
+      city: "",
       numSites: 5,
       places: [],
       imgLinks: [],
       siteCoords: [],
       photoCoords: [],
+      correctPhotos: [],
       route: useIonRouter(),
     };
   },
   mounted() {
+    this.city = ciudad_export.value;
     const URL = "/api/maps/api/place/nearbysearch/json?location=" + latitud_export.value + "," + longitud_export.value + "&keyword=" + this.keyword + ciudad_export.value + "&radius=" + this.radius + "&key=" + API_KEY;
     axios.get(URL).then(response => {
       this.places = response.data.results.slice(0, this.numSites);
       for (let i = 0; i < this.places.length; i++) {
         this.siteCoords[i] = this.places[i].geometry.location;
-        this.monumentPhoto(this.places[i].photos[0].photo_reference,i);
+        this.monumentPhoto(this.places[i].photos[0].photo_reference, i);
       }
-      
+
       //console.log(this.imgLinks);
       //console.log(response.data.results);
 
@@ -91,13 +90,13 @@ export default defineComponent({
 
   },
   methods: {
-    monumentPhoto(photo_ref: string, index:number) {
+    monumentPhoto(photo_ref: string, index: number) {
       const url = "/api/maps/api/place/photo?maxwidth=400&photo_reference=" + photo_ref + "&key=" + API_KEY;
       var xhr = new XMLHttpRequest();
       var vm = this;
       xhr.open('GET', url, true)
       xhr.onload = function () {
-        vm.imgLinks[index]=xhr.responseURL.trim();
+        vm.imgLinks[index] = xhr.responseURL.trim();
       };
       xhr.send(null);
 
@@ -108,15 +107,7 @@ export default defineComponent({
         allowEditing: true,
         resultType: CameraResultType.Base64
       });
-
-      // image.webPath will contain a path that can be set as an image src.
-      // You can access the original file using image.path, which can be
-      // passed to the Filesystem API to read the raw data of the image,
-      // if desired (or pass resultType: CameraResultType.Base64 to getPhoto)
       var imageUrl = image.webPath;
-
-      // Can be set to the src of an image now
-      //imageElement.src = imageUrl;
       const url = "https://vision.googleapis.com/v1/images:annotate?key=" + API_KEY;
       const request = {
         requests: [
@@ -135,13 +126,21 @@ export default defineComponent({
       await axios.post(url, request).then(response => {
         const coords = response.data.responses[0].landmarkAnnotations[0].locations[0].latLng;
         this.photoCoords[id] = coords;
-        console.log(this.photoCoords)
-        console.log(this.haversine(this.siteCoords[id],this.photoCoords[id]))
+        if (this.haversine(this.siteCoords[id], this.photoCoords[id]) < 500) {
+          this.correctPhotos[id] = true;
+          let aux = "card-" + id;
+          let el = document.getElementById(aux);
+          el.disabled = true;
+        }
+        else {
+          alert("La foto que has tomado está demasiado lejos del sitio. Prueba a hacer otra más cerca.")
+        }
       }).catch(error => {
         console.log("Error al obtener la foto: " + error.message);
+        alert("No se ha podido reconocer ninguna ubicación en esta foto. Prueba con otra")
       });
     },
-    toRadians(degrees) {
+    toRadians(degrees: number) {
       return degrees * (Math.PI / 180);
     },
     haversine(site1, site2) {
@@ -160,9 +159,8 @@ export default defineComponent({
       const distance = R * c;
       return distance;
     },
-    async exportarLugares(){
-      
-      places_export.value= this.places;
+    async exportarLugares() {
+      places_export.value = this.places;
       this.route.push('/end');
     }
 

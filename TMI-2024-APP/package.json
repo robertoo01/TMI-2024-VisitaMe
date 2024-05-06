@@ -27,12 +27,14 @@
     "base64-js": "^1.5.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "fluent-ffmpeg": "^2.1.2",
     "ionicons": "^7.0.0",
-    "pinia": "^2.1.7",
-    "videoshow": "^0.1.12",
     "vue": "^3.3.0",
-    "vue-router": "^4.2.0"
+    "vue-router": "^4.2.0",
+    "@ffmpeg/core": "^0.12.6",
+    "@ffmpeg/core-mt": "^0.12.6",
+    "@ffmpeg/ffmpeg": "^0.12.10",
+    "@ffmpeg/types": "^0.12.2",
+    "@ffmpeg/util": "^0.12.1"
   },
   "devDependencies": {
     "@capacitor/cli": "5.7.0",

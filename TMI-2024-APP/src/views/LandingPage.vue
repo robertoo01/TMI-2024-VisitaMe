@@ -6,13 +6,8 @@
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true" class="background-landing">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Tab 1</ion-title>
-        </ion-toolbar>
-      </ion-header>
       <div class="start-button-container">
-        <ion-button href="/location" size="large" class="start-button">Start</ion-button>
+        <ion-button href="/location" size="large" class="start-button">Empezar</ion-button>
       </div>
     </ion-content>
   </ion-page>

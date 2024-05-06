@@ -268,10 +268,6 @@ html {
   justify-content: center;
 }
 
-ion-modal {
-  --height: auto;
-}
-
 .distancia{
   margin-top: 20%;
   margin-bottom: 20%;
