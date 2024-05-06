@@ -30,6 +30,15 @@ npm install @capacitor/cli @capacitor/core
 
 ## Ejecutar el proyecto
 Para ejecutar el proyecto se deberá de hacer lo siguiente:
+1. Incluir en la carpeta 'src' un archivo de nombre "key.ts" con el contenido:
+```bash
+export const API_KEY = "AQUÍ_VA_TU_API_KEY_DE_GOOGLE"
+```
+2. Instalar las dependencias necesarias con:
+```bash
+npm i
+```   
+3. Ejecutar el servidor
 ```bash
 ionic serve
 ```
